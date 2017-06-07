@@ -108,13 +108,6 @@ double Vector::operator*(const Vector &other) {
 	return comp;
 }
 
-Vector operator*(double koeff, const Vector &right) {
-	Vector result(right);
-	for (int i = 0; i < result.dim; i++)
-		result.vect[i] *= koeff;
-	return result;
-}
-
 Vector Vector::operator*(double koeff) {
 	Vector res(*this);
 	for (int i = 0; i < dim; i++)

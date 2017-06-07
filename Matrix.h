@@ -28,6 +28,7 @@ public:
 	bool operator!=(const Matrix &);
 
 	Matrix& operator=(const Vector &);
+	Matrix& operator=(const Matrix &other);
 	Matrix operator+(const Matrix &);
 	Matrix operator-(const Matrix &);
 	Matrix operator*(const Matrix &);

@@ -77,28 +77,6 @@ Matrix::Matrix(double **M, int n, int m) {
 			this->M[i][j] = M[i][j];
 }
 
-Matrix::Matrix(double default_val, int rows_num, int cols_num) {
-	if (rows_num <= 0 || cols_num <= 0) throw 1;
-	this->row = rows_num;
-	this->col = cols_num;
-	M = new double*[rows_num];
-	for (int i = 0; i < rows_num; i++) M[i] = new double[cols_num];
-	for (int i = 0; i < rows_num; i++)
-		for (int j = 0; j < cols_num; j++)
-			M[i][j] = default_val;
-}
-
-Matrix::Matrix(double **mat, int rows_num, int cols_num) {
-	if (rows_num <= 0 || cols_num <= 0) throw 1;
-	this->row = rows_num;
-	this->col = cols_num;
-	this->M = new double*[rows_num];
-	for (int i = 0; i < rows_num; i++) this->M[i] = new double[cols_num];
-	for (int i = 0; i < rows_num; i++)
-		for (int j = 0; j < cols_num; j++)
-			this->M[i][j] = mat[i][j];
-}
-
 double * Matrix::operator[](int index) {
 	if (index < 0 || index >= row) throw 1;
 	return M[index];
