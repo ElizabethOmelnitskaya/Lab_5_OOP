@@ -16,6 +16,36 @@ Vector :: Vector(int dim) {
 	for (int i = 0; i < dim; i++) vect[i] = 0;
 }
 
+Vector::Vector(double *other_vect, int other_dim) {
+	if (other_dim <= 0) throw 1;
+	dim = other_dim;
+	vect = new double[dim];
+	for (int i = 0; i < dim; i++) vect[i] = other_vect[i];
+}
+
+Vector::Vector(double def_val, int dim) {
+	if (dim <= 0) throw 1;
+	this->dim = dim;
+	vect = new double[dim];
+	for (int i = 0; i < dim; i++) vect[i] = def_val;
+}
+
+Vector::Vector(const Matrix &M) {
+	if (M.row != 1 && M.col != 1) throw 1;
+	else if (M.row == 1) {
+		dim = M.col;
+		vect = new double[M.col];
+		for (int i = 0; i < M.col; i++)
+			vect[i] = M.M[0][i];
+	}
+	else {
+		dim = M.row;
+		vect = new double[M.row];
+		for (int i = 0; i < M.row; i++)
+			vect[i] = M.M[i][0];
+	}
+}
+
 Vector::Vector(const Vector &other) {
 	dim = other.dim;
 	vect = new double[dim];
@@ -39,18 +69,18 @@ Vector & Vector::operator=(const Vector &other) {
 	return *this;
 }
 
-Vector & Vector::operator=(const Matrix &matrix) {
+Vector & Vector::operator=(const Matrix &M) {
 	delete[] vect;
-	if (matrix.row != 1 && matrix.col != 1) throw 1;
-	else if (matrix.col == 1) {
-		dim = matrix.row;
-		vect = new double[matrix.row];
-		for (int i = 0; i < matrix.row; i++) vect[i] = matrix.M[i][0];
+	if (M.row != 1 && M.col != 1) throw 1;
+	else if (M.col == 1) {
+		dim = M.row;
+		vect = new double[M.row];
+		for (int i = 0; i < M.row; i++) vect[i] = M.M[i][0];
 	}
 	else {
-		dim = matrix.col;
-		vect = new double[matrix.col];
-		for (int i = 0; i < matrix.col; i++) vect[i] = matrix.M[0][i];
+		dim = M.col;
+		vect = new double[M.col];
+		for (int i = 0; i < M.col; i++) vect[i] = M.M[0][i];
 	}
 	return *this;
 }
@@ -61,11 +91,28 @@ Vector operator*(double koeff, const Vector &right) {
 	return res;
 }
 
+bool Vector::operator!=(const Vector &other) {
+	if (dim != other.dim) return true;
+	for (int i = 0; i < dim; i++)
+		if (fabs(vect[i] - other.vect[i]) >= EPS)
+			return true;
+	return false;
+}
+
+Vector::operator Matrix() { return Matrix(&vect, 1, dim); }
+
 double Vector::operator*(const Vector &other) {
 	double comp = 0;
 	for (int i = 0; i < dim; i++)
 		comp += vect[i] * other.vect[i];
 	return comp;
+}
+
+Vector operator*(double koeff, const Vector &right) {
+	Vector result(right);
+	for (int i = 0; i < result.dim; i++)
+		result.vect[i] *= koeff;
+	return result;
 }
 
 Vector Vector::operator*(double koeff) {
@@ -159,3 +206,28 @@ Vector::~Vector() {
 	delete[] vect;
 }
 
+Vector & Vector::operator+=(const Vector &other) {
+	if (dim != other.dim) throw 1;
+	for (int i = 0; i < dim; i++)
+		vect[i] += other.vect[i];
+	return *this;
+}
+
+Vector & Vector::operator-=(const Vector &other) {
+	if (dim != other.dim)
+		throw 1;
+	for (int i = 0; i < dim; i++)
+		vect[i] -= other.vect[i];
+	return *this;
+}
+
+Vector & Vector::operator*=(double koeff) {
+	for (int i = 0; i < dim; i++) vect[i] *= koeff;
+	return *this;
+}
+
+Vector & Vector::operator/=(double koeff) {
+	if (fabs(koeff) < EPS) throw 1;
+	for (int i = 0; i < dim; i++) vect[i] /= koeff;
+	return *this;
+}

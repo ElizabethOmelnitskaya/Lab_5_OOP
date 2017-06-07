@@ -2,7 +2,7 @@
 #include "InterfaceMatrix.h"
 #include "Vector.h"
 
-class Matrix; class SquareMatrix;
+class Matrix; class SqrMatrix;
 
 Matrix operator*(double, const Matrix&);
 
@@ -17,18 +17,30 @@ public:
 	Matrix(int, int);
 	Matrix(const Vector &);
 	Matrix(const Matrix &);
+	Matrix(double, int, int);
+	Matrix(double **, int, int);
 
 	std::string to_string() const;
 	int rows() const;
 	int cols() const;
 
 	bool operator==(const Matrix &);
+	bool operator!=(const Matrix &);
+
 	Matrix& operator=(const Vector &);
 	Matrix operator+(const Matrix &);
 	Matrix operator-(const Matrix &);
 	Matrix operator*(const Matrix &);
 	Matrix operator*(double);
 	Matrix operator/(double);
+
+	Vector operator*(const Vector &);
+	Matrix & operator+=(const Matrix &);
+	Matrix & operator-=(const Matrix &);
+	Matrix & operator*=(const Matrix &);
+	Matrix & operator*=(double);
+	Matrix & operator/=(double);
+
 	
 	double * operator[](int);
 	double min_norm() const;
@@ -40,7 +52,7 @@ public:
 	Matrix create_transposed() const;
 	void transpose();
 	
-	operator SquareMatrix();
+	operator SqrMatrix();
 	operator Vector();
 	
 	friend class Vector;

@@ -52,6 +52,53 @@ Matrix::Matrix(const Vector &vector) {
 	}
 }
 
+Matrix::Matrix(double def_val, int n, int m) {
+	if (n <= 0 || m <= 0) throw 1;
+	this->row = n;
+	this->col = m;
+	M = new double*[n];
+	for (int i = 0; i < n; i++) M[i] = new double[m];
+	for (int i = 0; i < n; i++){
+		for (int j = 0; j < m; j++) {
+			M[i][j] = def_val;
+		}
+	}
+}
+
+Matrix::Matrix(double **M, int n, int m) {
+	if (n <= 0 || m <= 0) throw 1;
+	this->row = n;
+	this->col = m;
+	this->M = new double*[n];
+	for (int i = 0; i < n; i++)
+		this->M[i] = new double[m];
+	for (int i = 0; i < n; i++)
+		for (int j = 0; j < m; j++)
+			this->M[i][j] = M[i][j];
+}
+
+Matrix::Matrix(double default_val, int rows_num, int cols_num) {
+	if (rows_num <= 0 || cols_num <= 0) throw 1;
+	this->row = rows_num;
+	this->col = cols_num;
+	M = new double*[rows_num];
+	for (int i = 0; i < rows_num; i++) M[i] = new double[cols_num];
+	for (int i = 0; i < rows_num; i++)
+		for (int j = 0; j < cols_num; j++)
+			M[i][j] = default_val;
+}
+
+Matrix::Matrix(double **mat, int rows_num, int cols_num) {
+	if (rows_num <= 0 || cols_num <= 0) throw 1;
+	this->row = rows_num;
+	this->col = cols_num;
+	this->M = new double*[rows_num];
+	for (int i = 0; i < rows_num; i++) this->M[i] = new double[cols_num];
+	for (int i = 0; i < rows_num; i++)
+		for (int j = 0; j < cols_num; j++)
+			this->M[i][j] = mat[i][j];
+}
+
 double * Matrix::operator[](int index) {
 	if (index < 0 || index >= row) throw 1;
 	return M[index];
@@ -67,6 +114,15 @@ bool Matrix::operator==(const Matrix &other) {
 	return true;
 }
 
+bool Matrix::operator!=(const Matrix &other) {
+	if (row != other.row || col != other.col) return true;
+	for (int i = 0; i < row; i++)
+		for (int j = 0; j < col; j++)
+			if (fabs(M[i][j] - other.M[i][j]) >= 0)
+				return true;
+	return false;
+}
+
 Matrix & Matrix::operator=(const Vector &vector){
 	for (int i = 0; i < row; i++) delete[] M[i];
 	delete[] M;
@@ -75,6 +131,19 @@ Matrix & Matrix::operator=(const Vector &vector){
 	M = new double*[1];
 	M[0] = new double[col];
 	for (int i = 0; i < col; i++) M[0][i] = vector.vect[i];
+	return *this;
+}
+
+Matrix & Matrix::operator=(const Matrix &other) {
+	for (int i = 0; i < row; i++) delete[] M[i];
+	delete[] M;
+	row = other.row;
+	col = other.col;
+	M = new double*[row];
+	for (int i = 0; i < row; i++) M[i] = new double[col];
+	for (int i = 0; i < row; i++)
+		for (int j = 0; j < col; j++)
+			M[i][j] = other.M[i][j];
 	return *this;
 }
 
@@ -134,6 +203,50 @@ Matrix operator*(double koeff, const Matrix &right) {
 	return res;
 }
 
+Vector Matrix::operator*(const Vector &right) {
+	if (col != right.dimens()) throw 1;
+	Vector res(row);
+	for (int ivect = 0; ivect < row; ivect++)
+		for (int isum = 0; isum < col; isum++)
+			res.vect[ivect] += M[ivect][isum] * right.vect[isum];
+	return res;
+}
+
+Matrix & Matrix::operator+=(const Matrix &other) {
+	if (row != other.row || col != other.col) throw 1;
+	for (int i = 0; i < row; i++)
+		for (int j = 0; j < col; j++)
+			M[i][j] += other.M[i][j];
+	return *this;
+}
+
+Matrix & Matrix::operator-=(const Matrix &other) {
+	if (row != other.row || col != other.col) throw 1;
+	for (int i = 0; i < row; i++)
+		for (int j = 0; j < col; j++)
+			M[i][j] -= other.M[i][j];
+	return *this;
+}
+
+Matrix & Matrix::operator*=(const Matrix &other) {
+	*this = *this * other;
+	return *this;
+}
+
+Matrix & Matrix::operator*=(double koeff) {
+	for (int i = 0; i < row; i++)
+		for (int j = 0; j < col; j++)
+			M[i][j] *= koeff;
+	return *this;
+}
+
+Matrix & Matrix::operator/=(double koeff) {
+	for (int i = 0; i < row; i++)
+		for (int j = 0; j < col; j++)
+			M[i][j] /= koeff;
+	return *this;
+}
+
 std::string Matrix::to_string() const {
 	std::string res = row == 1 ? "->" : "<-";
 	int to_ins_i_val;
@@ -176,9 +289,9 @@ void Matrix::transpose() {
 	M = trans_M;
 }
 
-Matrix::operator SquareMatrix() {
+Matrix::operator SqrMatrix() {
 	if (row != col) throw 1;
-	return SquareMatrix(M, row);
+	return SqrMatrix(M, row);
 }
 
 Matrix::operator Vector() { return Vector(*this); }

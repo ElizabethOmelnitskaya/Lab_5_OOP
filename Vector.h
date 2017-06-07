@@ -4,8 +4,7 @@
 #include <iostream>
 #include <vector>
 
-class Vector;
-class Matrix;
+class Vector; class Matrix;
 
 Vector operator*(double, const Vector &);
 
@@ -17,12 +16,16 @@ private:
 public:
 	Vector();
 	Vector(int);
-
+	Vector(double*, int);
+	Vector(double, int);
 	template<class list>
 	Vector(list);
 	Vector(const Vector &);
+	Vector(const Matrix &);
 
 	bool operator==(const Vector &);
+	bool operator!=(const Vector &);
+
 	Vector & operator=(const Vector &);
 	Vector & operator=(const Matrix &);
 	double operator*(const Vector &);
@@ -31,6 +34,11 @@ public:
 	Vector operator+(const Vector &);
 	Vector operator-(const Vector &);
 	Vector operator/(double);
+
+	Vector& operator+=(const Vector &);
+	Vector& operator-=(const Vector &);
+	Vector& operator*=(double);
+	Vector& operator/=(double);
 
 	double cube_norm() const; // кубическая норма max(abs(xi))
 	double octo_norm() const; //октоэдрическая норма abs(x1)+abs(x2)+...+abs(xn)
