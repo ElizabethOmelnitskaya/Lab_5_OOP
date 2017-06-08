@@ -26,10 +26,10 @@ Function & Function::operator=(const Function& other) {
 }
 
 double Function::deriv_n(double x, unsigned int order) {
-	double eps = order <= 4 ? eps * pow(10, order - 1) : 0.1;
-	std::vector<double> func_derivs;
 	if (order == 0) return (*this)(x);
-	
+	double eps = 0.0001;
+	eps = order <= 5 ? eps * pow(10, order - 1) : 0.1;
+	std::vector<double> func_derivs;
 	for (int i = 0; i <= order; i++) { func_derivs.push_back((*this)(x + ((int)order - 2 * i) * eps)); }
 
 	for (int order_index = 0; order_index < order; order_index++) {

@@ -11,8 +11,8 @@ Vector operator*(double, const Vector &);
 class Vector : public InterfaceVector {
 private:
 	const int CONST_DIM = 5;
-	double *vect;
 	int dim;
+	double *vect;
 public:
 	Vector();
 	Vector(int);

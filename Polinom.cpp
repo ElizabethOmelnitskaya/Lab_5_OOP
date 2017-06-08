@@ -38,29 +38,28 @@ std::string Polinom::to_string() const {
 		res = fabs(dval - ival) < EPS ? std::to_string(ival) : std::to_string(dval);
 		break;
 	case 1:
-		res = (fabs(pol_koef[0] - 1) < EPS ? "" : fabs(pol_koef[0] + 1) < EPS ? "+" : (fabs(dval - ival) < EPS ? std::to_string(ival) : std::to_string(dval) + " * ")) + "x";
+		res = (fabs(pol_koef[0] - 1) < EPS ? "" : fabs(pol_koef[0] + 1) < EPS ? "-" : (fabs(dval - ival) < EPS ? std::to_string(ival) : std::to_string(dval) + "*")) + "x";
 		break;
 	default:
-		res = (fabs(pol_koef[0] - 1) < EPS ? "" : fabs(pol_koef[0] + 1) < EPS ? "+" : (fabs(dval - ival) < EPS ? std::to_string(ival) : std::to_string(dval) + " * ")) + "x! " + std::to_string(pol_pow);
+		res = (fabs(pol_koef[0] - 1) < EPS ? "" : fabs(pol_koef[0] + 1) < EPS ? "-" : (fabs(dval - ival) < EPS ? std::to_string(ival) : std::to_string(dval) + "*")) + "x^" + std::to_string(pol_pow);
 		break;
 	}
-
 	for (int i = 1; i <= pol_pow; i++) {
 		ival = round(pol_koef[i]);
 		dval = pol_koef[i];
 		if (fabs(pol_koef[i]) < EPS) continue;
-		else if (pol_koef[i] > EPS) res += " + " + (fabs(dval - ival) < EPS ? std::to_string(ival) : std::to_string(dval));
-		else if (fabs(pol_koef[i] - 1) < EPS) {
-			res += " + ";
-			if (pol_pow == i) res += "#";
-		}
+		else if (pol_koef[i] > EPS) res += "+" + (fabs(dval - ival) < EPS ? std::to_string(ival) : std::to_string(dval));
 		else if (fabs(pol_koef[i] + 1) < EPS) {
-			res += " - ";
-			if (pol_pow == i) res += "#";
+			res += "-";
+			if (pol_pow == i) res += "1";
 		}
-		else res += " - " + (fabs(dval - ival) < EPS ? std::to_string(-ival) : std::to_string(-dval));
-		if (fabs(dval - ival) > EPS && i != pol_pow) res += " * ";
-		if (i != pol_pow) res += "x ^ " + std::to_string(pol_pow - i);
+		else if (fabs(pol_koef[i] - 1) < EPS) {
+			res += "+";
+			if (pol_pow == i) res += "1";
+		}
+		else res += "-" + (fabs(dval - ival) < EPS ? std::to_string(-ival) : std::to_string(-dval));
+		if (fabs(dval - ival) > EPS && i != pol_pow) res += "*";
+		if (i != pol_pow) res += "x^" + std::to_string(pol_pow - i);
 		else if (pol_pow - i == 1) res += "x";
 	}
 	return res;
